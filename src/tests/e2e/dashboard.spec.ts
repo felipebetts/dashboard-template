@@ -3,6 +3,9 @@ import { expect, test } from '@playwright/test'
 test("'/' redireciona para '/login'", async ({ page }) => {
   await page.goto('/')
   await expect(page).toHaveURL(/\/login$/)
+  await expect(
+    page.getByRole('heading', { name: 'Entre na sua conta' }),
+  ).toBeVisible()
 })
 
 test('dashboard renderiza sidebar com os grupos da config', async ({
