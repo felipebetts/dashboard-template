@@ -1,0 +1,17 @@
+# Notas e decisões do projeto
+
+Log cronológico de decisões, aprendizados e mudanças não-óbvias que não cabem em nenhum doc de `docs/config/` (que são organizados por área de tooling, não por linha do tempo). Serve como "memória" do projeto entre sessões — antes de investigar algo do zero, olhe aqui.
+
+Formato de cada entrada: data, o que mudou/foi decidido, e o porquê (quando relevante).
+
+## Como usar
+
+- Ao tomar uma decisão não-óbvia, descobrir uma restrição, ou fazer uma mudança que outra sessão precisaria saber para não redescobrir do zero, adicione uma entrada aqui (ou atualize o `docs/config/*.md` relevante, se for sobre _como uma parte do stack está configurada_).
+- Entradas antigas que não são mais relevantes (decisão revertida, contexto que não existe mais) devem ser removidas ou marcadas como obsoletas, não acumuladas indefinidamente.
+
+## Entradas
+
+- **2026-09-17** — ~~Criado este arquivo e o `CLAUDE.md` na raiz do projeto (antes só existia `@AGENTS.md` como referência). `CLAUDE.md` agora documenta comandos, arquitetura e a convenção de manter `docs/` atualizado.~~ **Obsoleta** desde 2026-11-10: esse conteúdo foi movido para o `AGENTS.md` (ver entrada abaixo).
+- **2026-11-10** — Conteúdo de projeto (comandos, arquitetura, política de docs) movido do `CLAUDE.md` para o `AGENTS.md`, que é o padrão aberto lido por Codex, Cursor, Copilot, Gemini etc. (mantido pela Agentic AI Foundation/Linux Foundation). O `CLAUDE.md` ficou só com `@AGENTS.md` + o que é exclusivo do Claude Code (subagents em `.claude/agents/`). Motivo: antes, agentes que não são o Claude só viam o bloco do Next.js. O import `@AGENTS.md` é mantido mesmo com o fallback nativo do Claude Code (v2.1.277+), porque esse fallback só vale quando não existe `CLAUDE.md` e não está disponível em Bedrock/Vertex/Foundry. Conteúdo próprio do `AGENTS.md` fica fora dos marcadores `nextjs-agent-rules`, que o `next dev` reescreve.
+- **2026-11-10** — Padrão de documentação formalizado na seção "Documentação" do `AGENTS.md`: cada fato tem um arquivo dono (README resume para humanos, `AGENTS.md` lista armadilhas para agentes, `docs/config/` tem o detalhe, `notas.md` o histórico), e a regra de atualização passou a incluir o README. Também: toda a documentação em português (o `AGENTS.md` foi traduzido; só o bloco gerado pelo Next fica em inglês); todo `docs/config/*.md` termina com "Resumo prático"; `.md` staged passa pelo Prettier no `pre-commit`; a instrução de setup do template agora também reescreve o título/abertura do README. Motivo: os mesmos fatos estavam em três lugares e já tinham começado a divergir (ex.: `husky.md` ausente da lista de docs do guia de agentes).
+- **2026-11-10** — Criado o `dashboard-template` a partir dos arquivos versionados do `nextjs-16-boilerplate` (sem histórico). Escopo e decisões em `docs/superpowers/specs/2026-11-10-dashboard-template-design.md`. A instrução de setup do `AGENTS.md` foi mantida porque este repo também é um template: cada projeto clonado dele deve reescrever a seção "Projeto".
