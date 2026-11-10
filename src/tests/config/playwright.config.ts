@@ -36,7 +36,8 @@ export default defineConfig({
   webServer: {
     command: 'pnpm build && pnpm start',
     cwd: projectRoot,
-    url: baseURL,
+    // Checa uma rota que sempre responde 200: `/` redireciona para `/login`.
+    url: `${baseURL}/dashboard`,
     reuseExistingServer: !process.env.CI,
     env: { PORT: String(port) },
   },

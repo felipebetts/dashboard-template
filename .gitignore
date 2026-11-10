@@ -46,3 +46,6 @@ next-env.d.ts
 
 # superpowers (workspace local de execução de planos)
 .superpowers/
+
+# eslint cache (lint-staged usa --cache)
+.eslintcache
