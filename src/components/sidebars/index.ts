@@ -1,6 +1,8 @@
 import type { ComponentType } from 'react'
 
+import { SidebarCollapsible } from '@/components/sidebars/sidebar-collapsible'
 import { SidebarDefault } from '@/components/sidebars/sidebar-default'
+import { SidebarFloating } from '@/components/sidebars/sidebar-floating'
 import type {
   SidebarVariant,
   SidebarVariantProps,
@@ -17,6 +19,6 @@ export const sidebarVariants: Record<
   ComponentType<SidebarVariantProps>
 > = {
   default: SidebarDefault,
-  collapsible: SidebarDefault, // substituída na Task 4
-  floating: SidebarDefault, // substituída na Task 4
+  collapsible: SidebarCollapsible,
+  floating: SidebarFloating,
 }

@@ -24,7 +24,7 @@ export function SectionCards() {
           <CardAction>
             <Badge variant="outline">
               <RiArrowUpLine />
-              +12.5%
+              +12,5%
             </Badge>
           </CardAction>
         </CardHeader>
@@ -68,7 +68,7 @@ export function SectionCards() {
           <CardAction>
             <Badge variant="outline">
               <RiArrowUpLine />
-              +12.5%
+              +12,5%
             </Badge>
           </CardAction>
         </CardHeader>

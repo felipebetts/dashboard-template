@@ -184,6 +184,11 @@ export function ChartAreaInteractive() {
             <ToggleGroupItem value="7d">Últimos 7 dias</ToggleGroupItem>
           </ToggleGroup>
           <Select
+            items={[
+              { label: 'Últimos 3 meses', value: '90d' },
+              { label: 'Últimos 30 dias', value: '30d' },
+              { label: 'Últimos 7 dias', value: '7d' },
+            ]}
             value={timeRange}
             onValueChange={(value) => {
               if (value !== null) {
