@@ -47,11 +47,11 @@ Como os ícones são componentes (funções), a config não pode ser passada de 
 
 ## Variantes de sidebar (`src/components/sidebars/`)
 
-| Valor em `src/config/layout.ts` | Arquivo                   | Bloco shadcn de origem | Comportamento                                                        |
-| ------------------------------- | ------------------------- | ---------------------- | -------------------------------------------------------------------- |
-| `'default'`                     | `sidebar-default.tsx`     | `dashboard-01`         | `variant="inset"`, some por completo ao recolher, subitens abertos   |
-| `'collapsible'`                 | `sidebar-collapsible.tsx` | `sidebar-07`           | Recolhe para ícones; itens com subitens viram grupos colapsáveis     |
-| `'floating'`                    | `sidebar-floating.tsx`    | `sidebar-04`           | `variant="floating"`, sem ícones nos itens, subitens sempre à mostra |
+| Valor em `src/config/layout.ts` | Arquivo                   | Bloco shadcn de origem | Comportamento                                                                             |
+| ------------------------------- | ------------------------- | ---------------------- | ----------------------------------------------------------------------------------------- |
+| `'default'`                     | `sidebar-default.tsx`     | `dashboard-01`         | `variant="inset"`, some por completo ao recolher, subitens abertos                        |
+| `'collapsible'`                 | `sidebar-collapsible.tsx` | `sidebar-07`           | Recolhe para ícones; itens com subitens viram grupos colapsáveis                          |
+| `'floating'`                    | `sidebar-floating.tsx`    | `sidebar-04`           | `variant="floating"`, subitens sempre à mostra; itens com a mesma hierarquia da `default` |
 
 Contrato: cada variante recebe `SidebarVariantProps` (`{ navigation } & ComponentProps<typeof Sidebar>`, em `sidebars/types.ts`) e declara suas próprias props visuais (`variant`, `collapsible`) — o layout `(dashboard)/layout.tsx` não muda ao trocar de variante. Partes comuns ficam fora das variantes: `AppBrand` (logo + nome), `NavUser` (menu do usuário) e `sidebars/nav-secondary.tsx` (links do rodapé).
 

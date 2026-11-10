@@ -7,4 +7,4 @@ import type { SidebarVariant } from '@/components/sidebars/types'
  * - 'collapsible' → bloco `sidebar-07` (submenus colapsáveis, recolhe para ícones)
  * - 'floating'    → bloco `sidebar-04` (flutuante, submenus sempre visíveis)
  */
-export const sidebarVariant: SidebarVariant = 'default'
+export const sidebarVariant: SidebarVariant = 'floating'

@@ -25,7 +25,8 @@ import { isNavItemActive } from '@/lib/navigation'
 
 /**
  * Variante 'floating' — bloco shadcn `sidebar-04`: sidebar flutuante com
- * subitens sempre visíveis, sem ícones nos itens.
+ * subitens sempre visíveis. Os itens seguem a hierarquia da variante
+ * `default` (ícones, subitens recuados com linha-guia).
  */
 export function SidebarFloating({ navigation, ...props }: SidebarVariantProps) {
   const pathname = usePathname()
@@ -38,24 +39,26 @@ export function SidebarFloating({ navigation, ...props }: SidebarVariantProps) {
         {navigation.groups.map((group) => (
           <SidebarGroup key={group.label}>
             <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
-            <SidebarMenu className="gap-2">
+            <SidebarMenu>
               {group.items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
+                    tooltip={item.title}
                     isActive={isNavItemActive(item, pathname)}
-                    render={<Link href={item.href} className="font-medium" />}
+                    render={<Link href={item.href} />}
                   >
-                    {item.title}
+                    <item.icon />
+                    <span>{item.title}</span>
                   </SidebarMenuButton>
                   {item.items?.length ? (
-                    <SidebarMenuSub className="ml-0 border-l-0 px-1.5">
+                    <SidebarMenuSub>
                       {item.items.map((sub) => (
                         <SidebarMenuSubItem key={sub.title}>
                           <SidebarMenuSubButton
                             isActive={isNavItemActive(sub, pathname)}
                             render={<Link href={sub.href} />}
                           >
-                            {sub.title}
+                            <span>{sub.title}</span>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       ))}
