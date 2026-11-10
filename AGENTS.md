@@ -25,12 +25,13 @@ pnpm é o único package manager suportado (fixado em `packageManager` no `packa
 - `pnpm install` — instala dependências (e ativa os git hooks via `prepare`)
 - `pnpm dev` / `pnpm build` / `pnpm start` — servidor de dev / build de produção / serve do build
 - `pnpm lint` — ESLint (flat config)
+- `pnpm typecheck` — `next typegen` + `tsc --noEmit` (o `tsc` sozinho falha sem os tipos de rota gerados, ex. `LayoutProps`)
 - `pnpm format` — Prettier, escreve no repo inteiro
 - `pnpm test` — testes unitários uma vez (Vitest)
 - `pnpm test:watch` — testes unitários em watch
 - `pnpm test:e2e` — Playwright E2E; builda e sobe o app na porta 3100 antes, então é bem mais lento que o unitário
-- Um arquivo de teste unitário: `pnpm test src/tests/unit/page.test.tsx` (filtros da CLI do Vitest, ex. `-t <nome>`, funcionam pelo script)
-- Um spec E2E: `pnpm test:e2e src/tests/e2e/home.spec.ts`
+- Um arquivo de teste unitário: `pnpm test src/tests/unit/navigation.test.ts` (filtros da CLI do Vitest, ex. `-t <nome>`, funcionam pelo script)
+- Um spec E2E: `pnpm test:e2e src/tests/e2e/auth.spec.ts`
 
 ## Armadilhas de arquitetura
 
@@ -43,6 +44,10 @@ Só o que um agente erraria sem aviso. O detalhe de cada item está no doc da á
 - **Alias `@/*` → `src/*`** no `tsconfig.json` e nos `aliases` do `components.json`. Se `src/components/ui` ou `src/lib` mudarem de lugar, atualize o `components.json` também. → [`docs/config/stack-geral.md`](docs/config/stack-geral.md)
 - **Env vars centralizadas** em `src/utils/env.ts` via `requireEnv(name, optional?)`; nunca leia `process.env` direto no resto do app. → [`docs/config/stack-geral.md`](docs/config/stack-geral.md)
 - **Nomes de arquivo/pasta impostos pelo ESLint** (`eslint-plugin-check-file`): `.ts`/`.tsx` em `KEBAB_CASE`; pastas em `src/app/**` na convenção do App Router (`(group)`, `[slug]`, `[...catchAll]`). → [`docs/config/lint-formatacao.md`](docs/config/lint-formatacao.md)
+- **Navegação só via config**: links da sidebar e breadcrumb vêm de `src/config/navigation.ts`; nunca hardcode links em componentes de sidebar. → [`docs/config/layout-navegacao.md`](docs/config/layout-navegacao.md)
+- **Sidebar só via registro**: a variante ativa é `sidebarVariant` em `src/config/layout.ts`; variantes novas aceitam `SidebarVariantProps` e são registradas em `src/components/sidebars/index.ts` (o teste parametrizado cobre todas). → [`docs/config/layout-navegacao.md`](docs/config/layout-navegacao.md)
+- **Auth é só layout**: os forms em `src/components/auth/` só navegam; `/` redireciona para `/login`; proteção de rota entra em `src/proxy.ts` (nome do middleware no Next 16). → [`docs/config/layout-navegacao.md`](docs/config/layout-navegacao.md)
+- **Blocos shadcn e overwrite**: `shadcn add <bloco>` para no prompt de sobrescrever componentes existentes; não use `--overwrite` (desfaz os ajustes de lint em `ui/label.tsx` e `hooks/use-mobile.ts`). → [`docs/config/estilizacao.md`](docs/config/estilizacao.md)
 - **Git hooks**: o `pre-commit` roda ESLint/Prettier nos arquivos staged e o `pre-push` roda `pnpm test`; não use `--no-verify` para contornar. → [`docs/config/husky.md`](docs/config/husky.md)
 
 ## Documentação

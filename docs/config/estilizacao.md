@@ -50,7 +50,7 @@ Esse arquivo é o que a **CLI do shadcn** lê para saber como/onde gerar código
 
 ## Anatomia de um componente shadcn já instalado
 
-`src/components/ui/button.tsx` é o único componente de UI já presente e serve de referência para o padrão esperado:
+`src/components/ui/button.tsx` serve de referência para o padrão esperado (os demais componentes em `src/components/ui` vieram dos blocos `dashboard-01`, `login-02`, `sidebar-07` e `sidebar-04`):
 
 - Usa o primitivo do **base-ui** (`@base-ui/react/button`) como base acessível/headless.
 - Usa **`cva`** (`class-variance-authority`) para declarar `variant` (`default`, `outline`, `secondary`, `ghost`, `destructive`, `link`) e `size` (`default`, `xs`, `sm`, `lg`, `icon`, `icon-xs`, `icon-sm`, `icon-lg`) como variantes tipadas.
@@ -83,6 +83,16 @@ Fluxo recomendado ao precisar de UI nova:
    Rodar `pnpm dlx shadcn@latest add` sem argumento lista todos os componentes disponíveis no registry.
 
 4. Só depois de confirmar que o componente não existe no registry do shadcn é que faz sentido implementá-lo manualmente — e, mesmo assim, seguindo a mesma anatomia descrita acima (primitivo headless + `cva` + `cn` + `data-slot`) para manter consistência com o restante do design system.
+
+## Blocos e ajustes locais
+
+Blocos (`pnpm dlx shadcn@latest add <bloco>`) trazem componentes de UI junto. Quando algum já existe, a CLI pergunta se deve sobrescrever e, sem terminal interativo, aborta. **Não use `--overwrite`**: alguns arquivos gerados foram ajustados para passar no lint estrito do projeto e voltariam ao original:
+
+- `src/hooks/use-mobile.ts` — reescrito com `useSyncExternalStore` (o original chama `setState` dentro de `useEffect`, proibido pela regra `react-hooks/set-state-in-effect`).
+- `src/components/ui/label.tsx` — `eslint-disable` de `jsx-a11y/label-has-associated-control` (é um componente genérico; quem usa associa o controle via `htmlFor`).
+- `src/components/dashboard/chart-area-interactive.tsx` — período padrão derivado no render (mesmo motivo do `use-mobile`) e `items` no `Select` (sem isso o Base UI mostra o valor cru, ex. `7d`).
+
+Prefira copiar o arquivo do bloco pelo JSON do registry (`https://ui.shadcn.com/r/styles/base-nova/<bloco>.json`) e instalar só os componentes que faltam.
 
 ## Resumo prático
 

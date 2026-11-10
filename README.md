@@ -9,6 +9,7 @@ Template de dashboard em **Next.js 16** (App Router), derivado do [`nextjs-16-bo
 - [O que já vem configurado](#o-que-já-vem-configurado)
 - [Requisitos](#requisitos)
 - [Como rodar](#como-rodar)
+- [Layout, navegação e sidebar](#layout-navegação-e-sidebar)
 - [Scripts disponíveis](#scripts-disponíveis)
 - [Estrutura do projeto](#estrutura-do-projeto)
 - [Variáveis de ambiente](#variáveis-de-ambiente)
@@ -55,9 +56,19 @@ cp .env.example .env.local
 pnpm dev
 ```
 
-Abra [http://localhost:3000](http://localhost:3000) no navegador. A página inicial pode ser editada em `src/app/page.tsx` — o Next.js atualiza a página automaticamente (Fast Refresh).
+Abra [http://localhost:3000](http://localhost:3000) no navegador: `/` redireciona para `/login`, e qualquer envio do formulário leva ao `/dashboard` (não há autenticação real).
 
 As fontes do projeto (Geist Sans, Geist Mono e Instrument Sans para headings) são carregadas e otimizadas via [`next/font/google`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) em `src/app/layout.tsx`.
+
+## Layout, navegação e sidebar
+
+O template traz dois grupos de rotas: `(auth)` — login, cadastro, esqueci a senha, redefinir senha e verificação por código, no estilo do bloco shadcn `login-02`, **só layout** — e `(dashboard)`, com o layout do bloco `dashboard-01` (sidebar, header com breadcrumb e tema claro/escuro).
+
+- **Links do app:** todos vêm de `src/config/navigation.ts`. Para adicionar uma seção, crie a rota em `src/app/(dashboard)/...` e o item na config. Itens sem página mostram "Em construção" automaticamente.
+- **Trocar a sidebar:** mude `sidebarVariant` em `src/config/layout.ts` — `'default'` (`dashboard-01`), `'collapsible'` (`sidebar-07`, recolhe para ícones) ou `'floating'` (`sidebar-04`).
+- **Plugar autenticação:** os formulários ficam em `src/components/auth/` e a proteção de rota entra em `src/proxy.ts`.
+
+Detalhes, contrato das variantes e como criar uma nova em [`docs/config/layout-navegacao.md`](./docs/config/layout-navegacao.md).
 
 ## Scripts disponíveis
 
@@ -67,6 +78,7 @@ As fontes do projeto (Geist Sans, Geist Mono e Instrument Sans para headings) s�
 | `pnpm build`      | Gera o build de produção (`next build`)                         |
 | `pnpm start`      | Sobe o build de produção já gerado (`next start`)               |
 | `pnpm lint`       | Roda o ESLint em todo o projeto                                 |
+| `pnpm typecheck`  | Gera os tipos de rota do Next e roda o `tsc --noEmit`           |
 | `pnpm format`     | Formata todo o repositório com Prettier                         |
 | `pnpm test`       | Roda os testes unitários (Vitest) uma vez                       |
 | `pnpm test:watch` | Roda os testes unitários em modo watch                          |
@@ -82,9 +94,16 @@ As fontes do projeto (Geist Sans, Geist Mono e Instrument Sans para headings) s�
 │   └── notas.md           # log datado de decisões e aprendizados
 ├── public/                # assets estáticos
 ├── src/
-│   ├── app/               # App Router (rotas, layout, globals.css)
-│   ├── components/ui/     # componentes de UI (gerados via shadcn CLI)
-│   ├── lib/               # utilitários compartilhados (ex.: cn)
+│   ├── app/               # App Router: (auth)/, (dashboard)/, layout, globals.css
+│   ├── components/
+│   │   ├── auth/          # casco e formulários das páginas de auth
+│   │   ├── dashboard/     # cards, gráfico e tabela do dashboard-01
+│   │   ├── sidebars/      # variantes de sidebar trocáveis
+│   │   └── ui/            # componentes de UI (gerados via shadcn CLI)
+│   ├── config/            # navigation.ts (links) e layout.ts (variante da sidebar)
+│   ├── hooks/             # hooks compartilhados (ex.: use-mobile)
+│   ├── lib/               # utilitários (cn, helpers de navegação)
+│   ├── types/             # tipos compartilhados (navegação)
 │   ├── utils/             # helpers de app (ex.: leitura de env vars)
 │   └── tests/
 │       ├── config/        # configs de Vitest e Playwright
@@ -163,6 +182,7 @@ Docs de configuração por área:
 - [`docs/config/estilizacao.md`](./docs/config/estilizacao.md) — Tailwind CSS v4, shadcn/ui e o fluxo de reuso/instalação de componentes.
 - [`docs/config/lint-formatacao.md`](./docs/config/lint-formatacao.md) — ESLint, Prettier e EditorConfig.
 - [`docs/config/husky.md`](./docs/config/husky.md) — hooks de `pre-commit` e `pre-push`.
+- [`docs/config/layout-navegacao.md`](./docs/config/layout-navegacao.md) — rotas, navegação, variantes de sidebar e onde plugar a autenticação.
 
 ## Deploy
 

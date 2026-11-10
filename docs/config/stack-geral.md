@@ -1,6 +1,6 @@
 # Stack geral
 
-Visão geral de como o projeto está configurado em nível de plataforma: Node, package manager, Next.js e TypeScript. Para as outras áreas, veja os documentos irmãos nesta pasta: [`testes.md`](./testes.md), [`estilizacao.md`](./estilizacao.md), [`lint-formatacao.md`](./lint-formatacao.md) e [`husky.md`](./husky.md).
+Visão geral de como o projeto está configurado em nível de plataforma: Node, package manager, Next.js e TypeScript. Para as outras áreas, veja os documentos irmãos nesta pasta: [`testes.md`](./testes.md), [`estilizacao.md`](./estilizacao.md), [`lint-formatacao.md`](./lint-formatacao.md), [`husky.md`](./husky.md) e [`layout-navegacao.md`](./layout-navegacao.md).
 
 ## Node e package manager
 
@@ -16,6 +16,7 @@ Visão geral de como o projeto está configurado em nível de plataforma: Node, 
 | `build`      | `next build`                                                     | Build de produção              |
 | `start`      | `next start`                                                     | Sobe o build de produção       |
 | `lint`       | `eslint`                                                         | Roda o ESLint (flat config)    |
+| `typecheck`  | `next typegen && tsc --noEmit`                                   | Checagem de tipos              |
 | `format`     | `prettier --write .`                                             | Formata todo o repo            |
 | `test`       | `vitest run --config src/tests/config/vitest.config.mts`         | Testes unitários               |
 | `test:watch` | `vitest --config src/tests/config/vitest.config.mts`             | Testes unitários em watch mode |
@@ -37,6 +38,7 @@ Repare que os configs de teste não ficam na raiz — veja [`testes.md`](./teste
 - `paths`: `"@/*": ["./src/*"]` — o alias `@/` aponta para `src/`. É o mesmo alias usado pelos `aliases` do `components.json` (veja [`estilizacao.md`](./estilizacao.md)).
 - O plugin `"next"` é registrado em `compilerOptions.plugins` para habilitar os tipos gerados automaticamente pelo Next (`.next/types`).
 - `noEmit: true` — o TypeScript aqui é só para checagem; quem gera o JS final é o Next/SWC.
+- Tipos globais de rota (`LayoutProps`, `PageProps`) são gerados pelo Next em `.next/types`; por isso a checagem é `pnpm typecheck` (`next typegen` antes do `tsc`).
 
 ## Variáveis de ambiente
 

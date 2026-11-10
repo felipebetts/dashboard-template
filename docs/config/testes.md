@@ -6,12 +6,14 @@ Todos os configs de teste ficam centralizados em `src/tests/config/`, não na ra
 src/tests/
 ├── config/
 │   ├── vitest.config.mts     # config dos testes unitários
-│   ├── vitest.setup.ts       # setup global do Vitest (matchers do jest-dom)
+│   ├── vitest.setup.ts       # setup global do Vitest (jest-dom + cleanup)
 │   └── playwright.config.ts  # config dos testes E2E
 ├── unit/
-│   └── page.test.tsx
+│   ├── navigation.test.ts        # config de navegação e helpers
+│   └── sidebar-variants.test.tsx # todas as variantes de sidebar
 └── e2e/
-    └── home.spec.ts
+    ├── auth.spec.ts              # fluxos entre as páginas de auth
+    └── dashboard.spec.ts         # dashboard, sidebar, tema e páginas de exemplo
 ```
 
 ## Testes unitários — Vitest
@@ -24,9 +26,10 @@ Pontos importantes:
 - **`cacheDir`** é forçado para `<repo>/node_modules/.vite`. Isso existe porque, como `root` aponta para `src/tests`, o Vite por padrão criaria o cache dentro de `src/tests/node_modules` — o override evita isso.
 - **`environment: 'jsdom'`** — os testes rodam em um DOM simulado (necessário para testar componentes React).
 - **`plugins: [tsconfigPaths(), react()]`** — `tsconfigPaths()` faz o Vitest entender o alias `@/*` do `tsconfig.json`; `react()` (do `@vitejs/plugin-react`) habilita JSX/Fast Refresh no ambiente de teste.
-- **`setupFiles`** aponta para `vitest.setup.ts`, que só importa `@testing-library/jest-dom/vitest` — isso registra matchers como `toHaveTextContent`, `toBeInTheDocument`, etc.
+- **`setupFiles`** aponta para `vitest.setup.ts`, que importa `@testing-library/jest-dom/vitest` (matchers como `toHaveTextContent`, `toBeInTheDocument`) e registra `cleanup()` em `afterEach` — sem `globals: true`, o Testing Library não faz o cleanup automático e os renders de testes anteriores ficariam no DOM.
+- **jsdom não tem `matchMedia`**: testes que renderizam a sidebar (o `useIsMobile` do shadcn usa `matchMedia`) precisam de um stub — veja `sidebar-variants.test.tsx`.
 
-Exemplo de teste (`src/tests/unit/page.test.tsx`): usa `@testing-library/react` (`render`, `screen`) para renderizar a página e `vitest` (`test`, `expect`) como test runner — sem describe/it do Jest, é a API nativa do Vitest.
+Exemplos: `navigation.test.ts` testa funções puras; `sidebar-variants.test.tsx` usa `@testing-library/react` com `describe.each` para renderizar cada variante de sidebar dentro do `SidebarProvider`, com `next/navigation` mockado via `vi.mock`.
 
 Rodar:
 
@@ -45,7 +48,7 @@ Pontos importantes:
 
 - **Porta dedicada (`3100`)**: evita colidir com um `next dev` já rodando na porta padrão `3000` durante desenvolvimento local.
 - **`testDir: '../e2e'`** e **`outputDir`/reporter apontados explicitamente para `src/tests/e2e/...`** — como o Playwright resolve caminhos relativos a `process.cwd()` por padrão (não à localização do arquivo de config), os paths são construídos com `path.resolve`/`path.join` a partir de `__dirname` para não vazar artefatos de teste para a raiz do repo.
-- **`webServer`**: roda `pnpm build && pnpm start` com `cwd` apontando para a raiz do projeto (`projectRoot`, calculado a partir de `src/tests/config`), já que os scripts do Next.js precisam ser executados da raiz. `reuseExistingServer: !process.env.CI` permite reaproveitar um servidor já de pé localmente, mas força start limpo em CI.
+- **`webServer`**: roda `pnpm build && pnpm start` com `cwd` apontando para a raiz do projeto (`projectRoot`, calculado a partir de `src/tests/config`), já que os scripts do Next.js precisam ser executados da raiz. A checagem de prontidão (`url`) usa `/dashboard`, porque `/` redireciona para `/login` e o Playwright segue redirects. `reuseExistingServer: !process.env.CI` permite reaproveitar um servidor já de pé localmente, mas força start limpo em CI.
 - **`projects`**: roda os testes em `chromium`, `firefox` e `webkit` (via `devices` do Playwright), cobrindo os três motores de renderização.
 - **`retries`** e **`forbidOnly`** só ficam mais estritos quando `process.env.CI` está setado (2 retries em CI, 0 localmente; `test.only` esquecido falha o CI).
 
