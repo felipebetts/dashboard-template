@@ -54,7 +54,9 @@ export function SidebarCollapsible({
               {group.items.map((item) =>
                 item.items?.length ? (
                   <Collapsible
-                    key={item.title}
+                    // A sidebar fica montada no layout entre navegações; a key
+                    // remonta o grupo quando ele vira ativo para reabri-lo.
+                    key={`${item.title}-${isNavItemActive(item, pathname)}`}
                     defaultOpen={isNavItemActive(item, pathname)}
                     className="group/collapsible"
                     render={<SidebarMenuItem />}

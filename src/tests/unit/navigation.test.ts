@@ -1,4 +1,6 @@
 import { RiFolderLine, RiHomeLine } from '@remixicon/react'
+import { existsSync } from 'node:fs'
+import path from 'node:path'
 import { describe, expect, test } from 'vitest'
 
 import { navigation } from '@/config/navigation'
@@ -50,6 +52,12 @@ describe('navigation config', () => {
       .map((e) => e.href)
       .filter((h) => h !== '#')
     expect(new Set(hrefs).size).toBe(hrefs.length)
+  })
+
+  test('avatar do usuário é vazio (usa iniciais) ou existe em public/', () => {
+    const { avatar } = navigation.user
+    if (avatar === '' || /^https?:\/\//.test(avatar)) return
+    expect(existsSync(path.join(process.cwd(), 'public', avatar))).toBe(true)
   })
 
   test('todo grupo tem label e ao menos um item', () => {

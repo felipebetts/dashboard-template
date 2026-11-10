@@ -1,12 +1,17 @@
 import { render, screen, within } from '@testing-library/react'
-import { beforeAll, describe, expect, test, vi } from 'vitest'
+import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { type SidebarVariant, sidebarVariants } from '@/components/sidebars'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { navigation } from '@/config/navigation'
 
-vi.mock('next/navigation', () => ({ usePathname: () => '/gestao/clientes' }))
+const nav = vi.hoisted(() => ({ pathname: '/gestao/clientes' }))
+vi.mock('next/navigation', () => ({ usePathname: () => nav.pathname }))
+
+beforeEach(() => {
+  nav.pathname = '/gestao/clientes'
+})
 
 beforeAll(() => {
   // jsdom não implementa matchMedia (usado pelo useIsMobile do shadcn).
@@ -58,6 +63,26 @@ describe.each(variants)('variante %s', (variant) => {
     expect(link).toHaveAttribute('data-active')
     const dashboard = screen.getByRole('link', { name: 'Dashboard' })
     expect(dashboard).not.toHaveAttribute('data-active')
+  })
+
+  test('ao navegar para um subitem, pai e subitem ficam ativos e visíveis', () => {
+    nav.pathname = '/dashboard'
+    const Variant = sidebarVariants[variant]
+    const tree = () => (
+      <TooltipProvider>
+        <SidebarProvider>
+          <Variant navigation={navigation} />
+        </SidebarProvider>
+      </TooltipProvider>
+    )
+    const { rerender } = render(tree())
+    nav.pathname = '/gestao/projetos/concluidos'
+    rerender(tree())
+    const sub = screen.getByRole('link', { name: 'Concluídos', hidden: true })
+    expect(sub).toHaveAttribute('data-active')
+    expect(sub).toBeVisible()
+    const parent = screen.getAllByText('Projetos')[0].closest('[data-slot]')
+    expect(parent).toHaveAttribute('data-active')
   })
 
   test('renderiza o nome do app e o nome do usuário', () => {

@@ -21,7 +21,7 @@ export const navigation: NavigationConfig = {
   user: {
     name: 'Usuário Exemplo',
     email: 'usuario@exemplo.com',
-    avatar: '/avatars/user.jpg',
+    avatar: '', // vazio = iniciais; ou um caminho em public/ ou URL
   },
   groups: [
     {
