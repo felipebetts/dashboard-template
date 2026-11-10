@@ -12,7 +12,7 @@ afterEach(() => {
 // vira um objeto com classes vazias.
 vi.mock('next/font/google', () => {
   const font = () => ({ className: '', variable: '', style: {} })
-  return { Geist: font, Geist_Mono: font, Instrument_Sans: font }
+  return { Figtree: font, Geist_Mono: font, Noto_Sans: font }
 })
 
 // jsdom não implementa matchMedia (usado pelo useIsMobile do shadcn e pelo

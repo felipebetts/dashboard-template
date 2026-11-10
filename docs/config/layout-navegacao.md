@@ -1,6 +1,6 @@
 # Layout e navegação (dashboard-01, sidebars, auth)
 
-Como o app autenticado e as páginas de autenticação estão montados: route groups, a config única de navegação, o breadcrumb, as variantes de sidebar trocáveis e onde plugar a autenticação real. Os componentes visuais vêm de blocos do shadcn/ui (`dashboard-01`, `sidebar-07`, `sidebar-04`, `login-02`) no estilo `base-nova` — veja [`estilizacao.md`](./estilizacao.md).
+Como o app autenticado e as páginas de autenticação estão montados: route groups, a config única de navegação, o breadcrumb, as variantes de sidebar trocáveis e onde plugar a autenticação real. Os componentes visuais vêm de blocos do shadcn/ui (`dashboard-01`, `sidebar-07`, `sidebar-04`, `login-02`) no estilo `base-mira` — veja [`estilizacao.md`](./estilizacao.md).
 
 ## Rotas (`src/app`)
 

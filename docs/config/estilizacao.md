@@ -12,7 +12,19 @@
   - `@custom-variant dark (&:is(.dark *))` — define o dark mode como uma classe (`.dark` em um ancestral), não `prefers-color-scheme`.
   - Bloco `@theme inline { ... }` — mapeia tokens de design (`--color-primary`, `--radius-lg`, `--color-sidebar`, etc.) para variáveis CSS, permitindo usar classes como `bg-primary`, `text-muted-foreground`, `rounded-xl` etc. com base nos valores definidos em `:root`/`.dark`.
   - `:root { ... }` e `.dark { ... }` — os valores reais dos tokens, em `oklch(...)`, um por tema. Trocar o tema visual do projeto é editar essas variáveis, não trocar classes utilitárias espalhadas pelo código.
-  - `@layer base` aplica `border-border`, `outline-ring/50`, `bg-background`, `text-foreground` e `font-mono` globalmente — a fonte base do projeto é mono (`--font-mono` / `font-heading` também disponível para títulos).
+  - `@layer base` aplica `border-border`, `outline-ring/50`, `bg-background`, `text-foreground` e `font-sans` globalmente. As fontes ficam em `src/app/fonts.ts` (compartilhado entre `layout.tsx` e `global-error.tsx`): Noto Sans (`--font-sans`, base), Figtree (`--font-heading`, títulos via `font-heading`) e Geist Mono (`--font-mono`).
+
+## Preset do shadcn
+
+O visual segue o preset [`b1JVYF4dCi`](https://ui.shadcn.com/create?preset=b1JVYF4dCi): style `base-mira`, base/tema `mist`, gráficos `blue`, radius `small`, `menuColor: default`, Noto Sans + Figtree. Foi aplicado completo com `pnpm dlx shadcn@latest apply <preset> -y`, que reescreve `components.json`, `globals.css` e **regenera todos os componentes de `src/components/ui`**. `pnpm dlx shadcn@latest preset resolve` mostra o preset atual do projeto.
+
+Depois de reaplicar um preset, refaça os ajustes locais que a CLI desfaz:
+
+- A CLI injeta as fontes direto no `layout.tsx`: mova-as para `src/app/fonts.ts` e descarte a mudança no layout (senão o `global-error.tsx` fica sem elas).
+- Restaure `src/hooks/use-mobile.ts` e o `eslint-disable` de `src/components/ui/label.tsx` (ver [Blocos e ajustes locais](#blocos-e-ajustes-locais)), mantendo só as classes novas do estilo.
+- Rode `pnpm format` (a CLI gera com aspas duplas e ponto e vírgula).
+
+Para trocar só cores/radius e fontes sem regenerar componentes, use `--only theme,font`.
 
 ## Configuração do shadcn (`components.json`)
 
@@ -20,11 +32,11 @@ Esse arquivo é o que a **CLI do shadcn** lê para saber como/onde gerar código
 
 ```json
 {
-  "style": "base-nova",
+  "style": "base-mira",
   "rsc": true,
   "tailwind": {
     "css": "src/app/globals.css",
-    "baseColor": "zinc",
+    "baseColor": "mist",
     "cssVariables": true
   },
   "iconLibrary": "remixicon",
@@ -38,11 +50,11 @@ Esse arquivo é o que a **CLI do shadcn** lê para saber como/onde gerar código
 }
 ```
 
-- **`style: "base-nova"`** — o preset visual do shadcn usado (baseado em `@base-ui/react`, não em Radix — por isso a dependência `@base-ui/react` no `package.json` em vez de `@radix-ui/*`).
+- **`style: "base-mira"`** — o estilo visual do shadcn usado (baseado em `@base-ui/react`, não em Radix — por isso a dependência `@base-ui/react` no `package.json` em vez de `@radix-ui/*`).
 - **`rsc: true`** — os componentes gerados assumem React Server Components (App Router).
 - **`iconLibrary: "remixicon"`** — a biblioteca de ícones oficial deste setup é o `@remixicon/react`. O `lucide-react` que vinha do `create-next-app` foi removido; use só Remix Icon, que é o que a CLI do shadcn gera.
 - **`aliases`** — batem com os paths do `tsconfig.json` (`@/*` → `src/*`): `@/components/ui` para componentes de UI, `@/lib/utils` para o util `cn`, etc. A CLI usa esses aliases para saber onde colocar cada arquivo gerado — não mova `src/components/ui` ou `src/lib` sem atualizar este arquivo também.
-- **`baseColor: "zinc"`** + `cssVariables: true` — a paleta neutra de base e o uso de variáveis CSS (em vez de classes utilitárias hard-coded) para os tokens de cor.
+- **`baseColor: "mist"`** + `cssVariables: true` — a paleta neutra de base e o uso de variáveis CSS (em vez de classes utilitárias hard-coded) para os tokens de cor.
 
 ## `cn` (merge de classes)
 
@@ -65,7 +77,7 @@ Qualquer componente novo gerado pela CLI vai seguir essa mesma estrutura (primit
 Fluxo recomendado ao precisar de UI nova:
 
 1. **Procure primeiro em `src/components/ui`** — se o componente (ou algo próximo) já existe, reutilize/estenda em vez de recriar.
-2. **Se não existir, consulte o catálogo do shadcn** (`https://ui.shadcn.com`, style `base-nova`) para ver se o componente já é oferecido antes de escrevê-lo do zero.
+2. **Se não existir, consulte o catálogo do shadcn** (`https://ui.shadcn.com`, style `base-mira`) para ver se o componente já é oferecido antes de escrevê-lo do zero.
 3. **Instale via CLI**, nunca copiando/colando manualmente:
 
    ```bash
@@ -91,14 +103,17 @@ Blocos (`pnpm dlx shadcn@latest add <bloco>`) trazem componentes de UI junto. Qu
 - `src/hooks/use-mobile.ts` — reescrito com `useSyncExternalStore` (o original chama `setState` dentro de `useEffect`, proibido pela regra `react-hooks/set-state-in-effect`).
 - `src/components/ui/label.tsx` — `eslint-disable` de `jsx-a11y/label-has-associated-control` (é um componente genérico; quem usa associa o controle via `htmlFor`).
 - `src/components/dashboard/chart-area-interactive.tsx` — período padrão derivado no render (mesmo motivo do `use-mobile`) e `items` no `Select` (sem isso o Base UI mostra o valor cru, ex. `7d`).
+- `chart-area-interactive.tsx` e `data-table.tsx` — séries dos gráficos em `var(--chart-2)` (desktop) e `var(--chart-1)` (mobile) em vez do `var(--primary)` do bloco, para seguirem a cor de gráfico do preset.
 
-Prefira copiar o arquivo do bloco pelo JSON do registry (`https://ui.shadcn.com/r/styles/base-nova/<bloco>.json`) e instalar só os componentes que faltam.
+Prefira copiar o arquivo do bloco pelo JSON do registry (`https://ui.shadcn.com/r/styles/base-mira/<bloco>.json`) e instalar só os componentes que faltam.
 
 ## Resumo prático
 
 | Precisa de…                              | Onde / como                                                                         |
 | ---------------------------------------- | ----------------------------------------------------------------------------------- |
 | Mudar cores, radius ou dark mode         | Tokens em `src/app/globals.css` (`@theme inline`, `:root`, `.dark`)                 |
+| Trocar o preset do shadcn                | `pnpm dlx shadcn@latest apply <preset>` + refazer ajustes (seção Preset)            |
+| Mudar fontes                             | `src/app/fonts.ts` (`next/font/google`)                                             |
 | Um componente de UI                      | Reutilize `src/components/ui`; se faltar, `pnpm dlx shadcn@latest add <componente>` |
 | Um ícone                                 | `@remixicon/react` (não `lucide-react`)                                             |
 | Mesclar classes                          | `cn(...)` de `@/lib/utils`                                                          |

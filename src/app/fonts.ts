@@ -1,15 +1,16 @@
-import { Geist, Geist_Mono, Instrument_Sans } from 'next/font/google'
+import { Figtree, Geist_Mono, Noto_Sans } from 'next/font/google'
 
 // Compartilhadas entre o layout raiz e o global-error (que monta o próprio
-// documento e não herda o layout).
-const instrumentSansHeading = Instrument_Sans({
+// documento e não herda o layout). Sans e heading vêm do preset shadcn
+// b1JVYF4dCi; o mono não faz parte do preset e segue com Geist Mono.
+const figtreeHeading = Figtree({
   subsets: ['latin'],
   variable: '--font-heading',
 })
 
-const geistSans = Geist({
-  variable: '--font-sans',
+const notoSans = Noto_Sans({
   subsets: ['latin'],
+  variable: '--font-sans',
 })
 
 const geistMono = Geist_Mono({
@@ -18,7 +19,7 @@ const geistMono = Geist_Mono({
 })
 
 export const fontVariables = [
-  geistSans.variable,
+  notoSans.variable,
   geistMono.variable,
-  instrumentSansHeading.variable,
+  figtreeHeading.variable,
 ]

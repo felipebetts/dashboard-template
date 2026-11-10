@@ -22,19 +22,19 @@ Template de dashboard em **Next.js 16** (App Router), derivado do [`nextjs-16-bo
 
 ## O que já vem configurado
 
-| Área             | Ferramentas                                                             |
-| ---------------- | ----------------------------------------------------------------------- |
-| Framework        | Next.js 16 (App Router), React 19                                       |
-| Linguagem        | TypeScript 5 (modo `strict`)                                            |
-| Estilização      | Tailwind CSS v4 + shadcn/ui (`style: base-nova`, ícones Remix Icon)     |
-| Componentes/UI   | `@base-ui/react`, `class-variance-authority`, util `cn`                 |
-| Testes unitários | Vitest + Testing Library + jsdom                                        |
-| Testes E2E       | Playwright (chromium, firefox, webkit)                                  |
-| Lint             | ESLint 9 (flat config) — `eslint-config-next`, `jsx-a11y`, `check-file` |
-| Formatação       | Prettier — ordenação automática de imports e de classes Tailwind        |
-| Git hooks        | Husky + lint-staged (`pre-commit`) e testes unitários (`pre-push`)      |
-| Ambiente         | Node fixado via `.nvmrc`, pnpm como package manager único               |
-| Env vars         | Helper tipado (`src/utils/env.ts`) com validação de env obrigatória     |
+| Área             | Ferramentas                                                                              |
+| ---------------- | ---------------------------------------------------------------------------------------- |
+| Framework        | Next.js 16 (App Router), React 19                                                        |
+| Linguagem        | TypeScript 5 (modo `strict`)                                                             |
+| Estilização      | Tailwind CSS v4 + shadcn/ui (`style: base-mira`, preset `b1JVYF4dCi`, ícones Remix Icon) |
+| Componentes/UI   | `@base-ui/react`, `class-variance-authority`, util `cn`                                  |
+| Testes unitários | Vitest + Testing Library + jsdom                                                         |
+| Testes E2E       | Playwright (chromium, firefox, webkit)                                                   |
+| Lint             | ESLint 9 (flat config) — `eslint-config-next`, `jsx-a11y`, `check-file`                  |
+| Formatação       | Prettier — ordenação automática de imports e de classes Tailwind                         |
+| Git hooks        | Husky + lint-staged (`pre-commit`) e testes unitários (`pre-push`)                       |
+| Ambiente         | Node fixado via `.nvmrc`, pnpm como package manager único                                |
+| Env vars         | Helper tipado (`src/utils/env.ts`) com validação de env obrigatória                      |
 
 Cada uma dessas áreas está documentada em detalhe em [`docs/config/`](./docs/config) — veja a seção [Documentação](#documentação).
 
@@ -58,7 +58,7 @@ pnpm dev
 
 Abra [http://localhost:3000](http://localhost:3000) no navegador: `/` redireciona para `/dashboard` (as telas de auth ficam em `/login` etc.), e os formulários de auth só navegam entre as telas (o login leva ao `/dashboard`; não há autenticação real — fluxo completo em [`docs/config/layout-navegacao.md`](./docs/config/layout-navegacao.md#autenticação-só-layout)).
 
-As fontes do projeto (Geist Sans, Geist Mono e Instrument Sans para headings) são carregadas e otimizadas via [`next/font/google`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) em `src/app/layout.tsx`.
+O tema visual (cores, radius e fontes — Noto Sans, Figtree para headings e Geist Mono) segue o preset shadcn [`b1JVYF4dCi`](https://ui.shadcn.com/create?preset=b1JVYF4dCi); as fontes são carregadas via [`next/font/google`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) em `src/app/fonts.ts`. Detalhes em [`docs/config/estilizacao.md`](./docs/config/estilizacao.md#preset-do-shadcn).
 
 ## Layout, navegação e sidebar
 

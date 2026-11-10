@@ -130,11 +130,11 @@ const chartConfig = {
   },
   desktop: {
     label: 'Desktop',
-    color: 'var(--primary)',
+    color: 'var(--chart-2)',
   },
   mobile: {
     label: 'Mobile',
-    color: 'var(--primary)',
+    color: 'var(--chart-1)',
   },
 } satisfies ChartConfig
 
