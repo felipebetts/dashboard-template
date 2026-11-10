@@ -40,7 +40,7 @@ Esse arquivo é o que a **CLI do shadcn** lê para saber como/onde gerar código
 
 - **`style: "base-nova"`** — o preset visual do shadcn usado (baseado em `@base-ui/react`, não em Radix — por isso a dependência `@base-ui/react` no `package.json` em vez de `@radix-ui/*`).
 - **`rsc: true`** — os componentes gerados assumem React Server Components (App Router).
-- **`iconLibrary: "remixicon"`** — a biblioteca de ícones oficial deste setup é o `@remixicon/react`. Mesmo com `lucide-react` também instalado (resquício do `create-next-app`), **prefira ícones do Remix Icon** em componentes novos para manter consistência com o que a CLI do shadcn vai gerar.
+- **`iconLibrary: "remixicon"`** — a biblioteca de ícones oficial deste setup é o `@remixicon/react`. O `lucide-react` que vinha do `create-next-app` foi removido; use só Remix Icon, que é o que a CLI do shadcn gera.
 - **`aliases`** — batem com os paths do `tsconfig.json` (`@/*` → `src/*`): `@/components/ui` para componentes de UI, `@/lib/utils` para o util `cn`, etc. A CLI usa esses aliases para saber onde colocar cada arquivo gerado — não mova `src/components/ui` ou `src/lib` sem atualizar este arquivo também.
 - **`baseColor: "zinc"`** + `cssVariables: true` — a paleta neutra de base e o uso de variáveis CSS (em vez de classes utilitárias hard-coded) para os tokens de cor.
 

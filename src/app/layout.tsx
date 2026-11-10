@@ -1,27 +1,12 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono, Instrument_Sans } from 'next/font/google'
 
 import { ThemeProvider } from '@/components/theme-provider'
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 
+import { fontVariables } from './fonts'
 import './globals.css'
-
-const instrumentSansHeading = Instrument_Sans({
-  subsets: ['latin'],
-  variable: '--font-heading',
-})
-
-const geistSans = Geist({
-  variable: '--font-sans',
-  subsets: ['latin'],
-})
-
-const geistMono = Geist_Mono({
-  variable: '--font-mono',
-  subsets: ['latin'],
-})
 
 export const metadata: Metadata = {
   title: { default: 'Dashboard', template: '%s · Dashboard' },
@@ -33,13 +18,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
     <html
       lang="pt-BR"
       suppressHydrationWarning
-      className={cn(
-        'h-full',
-        'antialiased',
-        geistSans.variable,
-        geistMono.variable,
-        instrumentSansHeading.variable,
-      )}
+      className={cn('h-full', 'antialiased', ...fontVariables)}
     >
       <body className="flex min-h-full flex-col">
         <ThemeProvider

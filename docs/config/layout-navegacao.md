@@ -6,12 +6,16 @@ Como o app autenticado e as páginas de autenticação estão montados: route gr
 
 ```
 src/app/
-├── page.tsx                    # redirect('/login')
+├── page.tsx                    # redirect('/dashboard') (por enquanto)
+├── not-found.tsx               # 404 em pt-BR
+├── global-error.tsx            # erro no layout raiz (documento próprio)
+├── fonts.ts                    # fontes compartilhadas (layout + global-error)
 ├── (auth)/                     # casco login-02 (form à esquerda, imagem à direita)
 │   ├── layout.tsx
 │   ├── login/  signup/  forgot-password/  reset-password/  verify/
 └── (dashboard)/                # SidebarProvider + AppSidebar + SiteHeader
     ├── layout.tsx
+    ├── error.tsx               # erro numa página do dashboard (sidebar continua)
     ├── dashboard/              # conteúdo do bloco dashboard-01 (data.json fictício)
     ├── gestao/clientes/        # página de exemplo (lista com busca)
     └── [...slug]/              # "Em construção" para itens da navegação sem página; 404 nos demais
@@ -55,6 +59,14 @@ Contrato: cada variante recebe `SidebarVariantProps` (`{ navigation } & Componen
 
 **Adicionar uma variante:** crie `src/components/sidebars/sidebar-<nome>.tsx` aceitando `SidebarVariantProps`, adicione o nome ao tipo `SidebarVariant` e registre o componente em `sidebarVariants` (`sidebars/index.ts`). O teste parametrizado `src/tests/unit/sidebar-variants.test.tsx` passa a cobri-la automaticamente: ela precisa renderizar todos os grupos, itens, subitens e links secundários da config (use `keepMounted` em conteúdo colapsável) e marcar o item ativo.
 
+## Páginas de estado (404, erro, em construção)
+
+Todas usam `components/status-page.tsx` (ícone, código opcional, título, descrição e ações), então seguem o mesmo visual e os tokens de tema.
+
+- **404 — `src/app/not-found.tsx`**: renderizada quando o catch-all chama `notFound()`. Como o catch-all fica dentro de `(dashboard)`, o 404 aparece com sidebar e header. O `not-found.tsx` não aceita `metadata`; o título da aba ("Página não encontrada") vem do `generateMetadata` do catch-all, que também dá aos itens "Em construção" o título do próprio item.
+- **Erro em página — `src/app/(dashboard)/error.tsx`**: boundary do segmento; mantém a sidebar. Mostra o `digest` do erro (para cruzar com os logs do servidor), "Tentar novamente" (`retry()` — no Next 16 a prop é `retry`, não `reset`) e "Voltar ao dashboard". O `console.error` no `ErrorState` é o ponto para plugar um serviço de monitoramento.
+- **Erro no layout raiz — `src/app/global-error.tsx`**: substitui o documento inteiro, por isso declara `<html>`/`<body>`, importa `globals.css`, as fontes de `app/fonts.ts` e o `ThemeProvider`, e usa `<title>` do React (client components não exportam `metadata`).
+
 ## Header (`src/components/site-header.tsx`)
 
 Trigger da sidebar, breadcrumb (`getBreadcrumbs(usePathname())`) e `ThemeToggle`. O tema usa `next-themes` (`ThemeProvider` com `attribute="class"` no layout raiz, que tem `suppressHydrationWarning` no `<html>`); o ícone do toggle troca via CSS (`dark:`) para não depender do tema no render do servidor.
@@ -67,11 +79,13 @@ Trigger da sidebar, breadcrumb (`getBreadcrumbs(usePathname())`) e `ThemeToggle`
 
 ## Resumo prático
 
-| Quero…                        | Onde                                                               |
-| ----------------------------- | ------------------------------------------------------------------ |
-| Adicionar/renomear um link    | `src/config/navigation.ts`                                         |
-| Criar a página de uma seção   | `src/app/(dashboard)/<rota>/page.tsx` (o placeholder some sozinho) |
-| Trocar a sidebar              | `sidebarVariant` em `src/config/layout.ts`                         |
-| Criar uma variante de sidebar | `src/components/sidebars/` + registrar em `sidebars/index.ts`      |
-| Mudar nome/logo do app        | `navigation.app` em `src/config/navigation.ts`                     |
-| Plugar autenticação           | forms em `src/components/auth/` + `src/proxy.ts`                   |
+| Quero…                          | Onde                                                               |
+| ------------------------------- | ------------------------------------------------------------------ |
+| Adicionar/renomear um link      | `src/config/navigation.ts`                                         |
+| Criar a página de uma seção     | `src/app/(dashboard)/<rota>/page.tsx` (o placeholder some sozinho) |
+| Trocar a sidebar                | `sidebarVariant` em `src/config/layout.ts`                         |
+| Criar uma variante de sidebar   | `src/components/sidebars/` + registrar em `sidebars/index.ts`      |
+| Mudar nome/logo do app          | `navigation.app` em `src/config/navigation.ts`                     |
+| Plugar autenticação             | forms em `src/components/auth/` + `src/proxy.ts`                   |
+| Trocar o ícone da aba (favicon) | `src/app/icon.svg`                                                 |
+| Mudar textos de 404/erro        | `src/app/not-found.tsx`, `src/components/error-state.tsx`          |

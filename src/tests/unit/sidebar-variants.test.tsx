@@ -1,5 +1,5 @@
 import { render, screen, within } from '@testing-library/react'
-import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest'
+import { beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { type SidebarVariant, sidebarVariants } from '@/components/sidebars'
 import { SidebarProvider } from '@/components/ui/sidebar'
@@ -11,20 +11,6 @@ vi.mock('next/navigation', () => ({ usePathname: () => nav.pathname }))
 
 beforeEach(() => {
   nav.pathname = '/gestao/clientes'
-})
-
-beforeAll(() => {
-  // jsdom não implementa matchMedia (usado pelo useIsMobile do shadcn).
-  window.matchMedia ??= ((query: string) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addEventListener: () => {},
-    removeEventListener: () => {},
-    addListener: () => {},
-    removeListener: () => {},
-    dispatchEvent: () => false,
-  })) as typeof window.matchMedia
 })
 
 const renderVariant = (variant: SidebarVariant) => {

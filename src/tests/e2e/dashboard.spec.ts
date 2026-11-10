@@ -1,11 +1,8 @@
 import { expect, test } from '@playwright/test'
 
-test("'/' redireciona para '/login'", async ({ page }) => {
+test("'/' redireciona para '/dashboard'", async ({ page }) => {
   await page.goto('/')
-  await expect(page).toHaveURL(/\/login$/)
-  await expect(
-    page.getByRole('heading', { name: 'Entre na sua conta' }),
-  ).toBeVisible()
+  await expect(page).toHaveURL(/\/dashboard$/)
 })
 
 test('dashboard renderiza sidebar com os grupos da config', async ({
@@ -63,14 +60,34 @@ test("item 'Equipe' leva para Em construção e o botão volta ao dashboard", as
   await expect(
     page.getByRole('navigation', { name: /breadcrumb/i }),
   ).toContainText('Equipe')
-  await expect(page.getByText('Em construção')).toBeVisible()
+  await expect(
+    page.getByRole('heading', { name: 'Em construção' }),
+  ).toBeVisible()
+  await expect(page).toHaveTitle(/Equipe/)
   await page.getByRole('link', { name: 'Voltar ao dashboard' }).click()
   await expect(page).toHaveURL(/\/dashboard$/)
 })
 
-test("'/nao-existe' responde 404", async ({ page }) => {
+test("'/nao-existe' responde 404 com a página própria em pt-BR", async ({
+  page,
+}) => {
   const response = await page.goto('/nao-existe')
   expect(response?.status()).toBe(404)
+  await expect(
+    page.getByRole('heading', { name: 'Página não encontrada' }),
+  ).toBeVisible()
+  await expect(page).toHaveTitle(/Página não encontrada/)
+  await page.getByRole('link', { name: 'Voltar ao dashboard' }).click()
+  await expect(page).toHaveURL(/\/dashboard$/)
+})
+
+test('404 respeita o tema escuro escolhido', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'light' })
+  await page.goto('/dashboard')
+  await page.getByRole('button', { name: 'Alternar tema' }).click()
+  await expect(page.locator('html')).toHaveClass(/dark/)
+  await page.goto('/nao-existe')
+  await expect(page.locator('html')).toHaveClass(/dark/)
 })
 
 test.describe('mobile', () => {

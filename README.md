@@ -56,7 +56,7 @@ cp .env.example .env.local
 pnpm dev
 ```
 
-Abra [http://localhost:3000](http://localhost:3000) no navegador: `/` redireciona para `/login`, e os formulários de auth só navegam entre as telas (o login leva ao `/dashboard`; não há autenticação real — fluxo completo em [`docs/config/layout-navegacao.md`](./docs/config/layout-navegacao.md#autenticação-só-layout)).
+Abra [http://localhost:3000](http://localhost:3000) no navegador: `/` redireciona para `/dashboard` (as telas de auth ficam em `/login` etc.), e os formulários de auth só navegam entre as telas (o login leva ao `/dashboard`; não há autenticação real — fluxo completo em [`docs/config/layout-navegacao.md`](./docs/config/layout-navegacao.md#autenticação-só-layout)).
 
 As fontes do projeto (Geist Sans, Geist Mono e Instrument Sans para headings) são carregadas e otimizadas via [`next/font/google`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) em `src/app/layout.tsx`.
 
